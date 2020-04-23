@@ -1,0 +1,84 @@
+version: '3.6'
+services:
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.6.2
+    container_name: kibana
+    ports:
+      - 5601:5601
+    environment:
+      ELASTICSEARCH_URL: elasticsearch:9200
+      ELASTICSEARCH_HOST: elasticsearch:9200
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.2
+    container_name: elasticsearch
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    environment:
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.type=single-node
+    volumes:
+      - ./volume/elasticsearch/data:/var/lib/elasticsearch
+      - ./volume/elasticsearch/config/elasticsearch.yml:/etc/elasticsearch/config/elasticsearch.yml
+    ports:
+      - 9200:9200
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.6.2 
+    container_name: logstash
+    user: root      
+    ports:
+      - 5044:5044       
+      - 9600:9600  
+    depends_on:
+      - elasticsearch
+    environment:
+      - "xpack.security.enabled=false"
+      - "INPUT1=/var/tmp/log"
+      - "XPACK_MONITORING_ENABLED=false"
+    restart: unless-stopped
+    volumes:
+      - ./volume/logstash/pipeline/test.yml:/usr/share/logstash/test.yml
+      - ./volume/logstash/pipeline:/usr/share/logstash/pipeline
+                             
+
+  filebeat:
+    image: docker.elastic.co/beats/metricbeat:7.6.2 
+    container_name: filebeat   
+    hostname: filebeat
+    user: root    
+    depends_on:
+      - elasticsearch    
+    configs:
+      - source: fb_config
+      - target: /usr/share/filebeat/filebeat.yml    
+    volumes:      
+      - "./volume/filebeat/data:/usr/share/filebeat/data"     
+      - "./volume/filebeat/logs/example.log:/usr/share/filebeat/logs/example.log"         
+      - "./volume/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml"     
+    environment:      
+      ELASTICSEARCH_HOST: elasticsearch:9200    
+    command:
+      - "-e"
+      - "--strict.perms=false"
+
+  # Container to monitor services running inside other containers
+
+  metricbeat:
+    image: docker.elastic.co/beats/metricbeat:7.6.2
+    container_name: metricbeat   
+    user: root            
+    command: -e
+    environment:
+      - "WAIT_FOR_HOSTS=elasticsearch:9200 kibana:5601"
+      - "HOST_ELASTICSEARCH=elasticsearch:9200"
+      - "HOST_KIBANA=kibana:5601"
+    depends_on:
+      - logstash
+    volumes:      
+      - "./volume/metricbeat/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml"   
+      - "./volume/metricbeat/modules.d/system.yml:/usr/share/metricbeat/modules.d/system.yml"      
+    

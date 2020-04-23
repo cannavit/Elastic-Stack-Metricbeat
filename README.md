@@ -14,3 +14,29 @@ It is necessary to have installed in your operating system:
 
 
 
+### 1. Build services using docker-compose
+
+You can build the environment using the docker-compose commands
+
+```
+docker-compose up -d
+
+```
+
+### 2. Verify that all services are executed
+
+```
+docker ps 
+```
+
+Results:
+
+```
+CONTAINER ID        IMAGE                                                 COMMAND                  CREATED              STATUS              PORTS                                            NAMES
+728c514c6486        docker.elastic.co/beats/metricbeat:7.6.2              "/usr/local/bin/dock…"   57 seconds ago       Up 32 seconds                                                        metricbeat
+4cee9956dedf        docker.elastic.co/beats/metricbeat:7.6.2              "/usr/local/bin/dock…"   57 seconds ago       Up 56 seconds                                                        filebeat
+6ffeacd38cda        docker.elastic.co/logstash/logstash:7.6.2             "/usr/local/bin/dock…"   About a minute ago   Up About a minute   0.0.0.0:5044->5044/tcp, 0.0.0.0:9600->9600/tcp   logstash
+fdd61565adbe        docker.elastic.co/elasticsearch/elasticsearch:7.6.2   "/usr/local/bin/dock…"   About a minute ago   Up About a minute   0.0.0.0:9200->9200/tcp, 9300/tcp                 elasticsearch
+00bc5e77e884        docker.elastic.co/kibana/kibana:7.6.2                 "/usr/local/bin/dumb…"   About a minute ago   Up About a minute   0.0.0.0:5601->5601/tcp                           kibana
+```
+
