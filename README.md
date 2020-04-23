@@ -40,3 +40,13 @@ fdd61565adbe        docker.elastic.co/elasticsearch/elasticsearch:7.6.2   "/usr/
 00bc5e77e884        docker.elastic.co/kibana/kibana:7.6.2                 "/usr/local/bin/dumb…"   About a minute ago   Up About a minute   0.0.0.0:5601->5601/tcp                           kibana
 ```
 
+### 3. Search dashboard
+
+1 . Open Kibana:  http://localhost:5601
+2 . Click in Dashboard Opcion 
+3 . Write (meatric system)
+4 . Open dashboard
+
+
+
+![meatricbeat_200px](files/pass.png)
