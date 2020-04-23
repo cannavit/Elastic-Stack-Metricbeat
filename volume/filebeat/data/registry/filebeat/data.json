@@ -1,0 +1,1 @@
+[{"source":"/var/log/yum.log","offset":1438,"timestamp":"2020-04-19T16:32:34.513330263Z","ttl":-2,"type":"log","meta":null,"FileStateOS":{"inode":9314527,"device":55}},{"source":"/usr/share/filebeat/logs/example.log","offset":79,"timestamp":"2020-04-20T19:05:39.444930055Z","ttl":-1,"type":"log","meta":null,"FileStateOS":{"inode":19928058,"device":2051}}]
