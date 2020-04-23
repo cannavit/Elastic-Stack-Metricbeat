@@ -44,29 +44,6 @@ services:
       - ./volume/logstash/pipeline/test.yml:/usr/share/logstash/test.yml
       - ./volume/logstash/pipeline:/usr/share/logstash/pipeline
                              
-
-  filebeat:
-    image: docker.elastic.co/beats/metricbeat:7.6.2 
-    container_name: filebeat   
-    hostname: filebeat
-    user: root    
-    depends_on:
-      - elasticsearch    
-    configs:
-      - source: fb_config
-      - target: /usr/share/filebeat/filebeat.yml    
-    volumes:      
-      - "./volume/filebeat/data:/usr/share/filebeat/data"     
-      - "./volume/filebeat/logs/example.log:/usr/share/filebeat/logs/example.log"         
-      - "./volume/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml"     
-    environment:      
-      ELASTICSEARCH_HOST: elasticsearch:9200    
-    command:
-      - "-e"
-      - "--strict.perms=false"
-
-  # Container to monitor services running inside other containers
-
   metricbeat:
     image: docker.elastic.co/beats/metricbeat:7.6.2
     container_name: metricbeat   
